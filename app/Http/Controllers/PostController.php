@@ -46,4 +46,10 @@ class PostController extends Controller
        $file = Storage::disk('s3')->download($post->uploaded_file);
        $file->send();
     }
+    public function postStore(Request $request){
+        Post::create($request->all());
+        return response()->json([
+            'status' =>200,
+        ]);
+    }
 }
