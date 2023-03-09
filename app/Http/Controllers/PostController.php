@@ -46,8 +46,65 @@ class PostController extends Controller
        $file = Storage::disk('s3')->download($post->uploaded_file);
        $file->send();
     }
-    public function postStore(Request $request){
-        Post::create($request->all());
+
+
+    // S3 From Frontend
+
+    public function postStore(Request $request)
+    {
+
+        Post::updateOrCreate(
+            ['id'=>$request->id],
+            [
+            'title'=>$request->title,
+            'description'=>$request->description,
+            'uploaded_file' =>$request->uploaded_file,
+            'image_url' =>$request->image_url,
+            'video_url' =>$request->video_url,
+        ]);
+        return response()->json([
+            'status' =>200,
+        ]);
+    }
+
+    public function getPosts(){
+        $posts = Post::latest()->get();
+        return response()->json([
+            'status' =>200,
+            'posts' => $posts,
+        ]);
+    }
+    public function deletePost($id){
+        $post = Post::find($id);
+        Storage::disk('s3')->delete($post->uploaded_file);
+        $post->delete();
+        return response()->json([
+            'status' =>200,
+        ]);
+    }
+    public function showPost($id){
+        $post = Post::find($id);
+        return response()->json([
+            'status' =>200,
+            'post'=>$post,
+        ]);
+    }
+    public function editPost($id){
+        $post = Post::find($id);
+        return response()->json([
+            'status' =>200,
+            'post'=>$post,
+        ]);
+    }
+    public function updatePost(Request $request,$id){
+        Post::find($id)->update(
+            [
+            'title'=>$request->title,
+            'description'=>$request->description,
+            'uploaded_file' =>$request->uploaded_file,
+            'image_url' =>$request->image_url,
+            'video_url' =>$request->video_url,
+        ]);
         return response()->json([
             'status' =>200,
         ]);

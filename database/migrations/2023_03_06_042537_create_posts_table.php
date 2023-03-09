@@ -17,6 +17,8 @@ class CreatePostsTable extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->text('uploaded_file')->nullable();
+            $table->text('video_url')->nullable();
+            $table->text('image_url')->nullable();
             $table->text('description')->nullable();
             $table->integer('status')->default(0);
             $table->timestamps();
